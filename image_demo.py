@@ -38,6 +38,7 @@ def main():
         ref_image = ref_image_list[0]
         for label, d2 in enumerate(dirs_level2):
             filenames = [f.path for f in os.scandir(d2) if f.is_file() and f.path.endswith(('.png', '.jpg', '.jpeg'))]
+            print(filenames)
             for f in filenames:
                 input_image, draw_image, output_scale = posenet.read_imgfile(
                     f, scale_factor=args.scale_factor, output_stride=output_stride)
