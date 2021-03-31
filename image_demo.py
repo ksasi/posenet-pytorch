@@ -71,7 +71,10 @@ def main():
 
                 keypoint_coords *= output_scale
                 keypoint_coords_ref *= output_scale
-                coord_list.append(keypoint_coords_ref[0]+keypoint_coords[0]+numpy.array([[label,0]]))
+                print(label)
+                print(type(label))
+                print(type(keypoint_coords))
+                coord_list.append(keypoint_coords_ref[0]+keypoint_coords[0])
     print(coord_list)
     final_array = numpy.array(coord_list).reshape(-1,(17+17)*2)
     numpy.savetxt("coord_list.csv", final_array, delimiter=",") 
