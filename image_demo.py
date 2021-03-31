@@ -51,7 +51,7 @@ def main():
         keypoint_coords *= output_scale
         coord_list.append(keypoint_coords[0])
     print(coord_list)
-    numpy.savetxt("coord_list.csv", numpy.array(coord_list), delimiter=",") 
+    numpy.savetxt("coord_list.csv", numpy.array(coord_list).reshape(-1,17*2), delimiter=",") 
 
 '''
         if args.output_dir:
