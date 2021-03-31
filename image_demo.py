@@ -34,6 +34,7 @@ def main():
     for d in dirs_level1:
         ref_image_list = [f.path for f in os.scandir(d) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
         ref_image = ref_image_list[0]
+        print(ref_image_list)
         dirs_level2 = [f.path for f in os.scandir(d) if f.is_dir()]
         for d2 in dirs_level2:
             filenames = [f.path for f in os.scandir(d2) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
