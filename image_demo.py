@@ -77,7 +77,7 @@ def main():
                 #print(type(keypoint_coords))
                 #print(coord_list)
                 #coord_list.append(numpy.array([label, 0]))
-                keypoint_coords_final = np.concatenate([keypoint_coords_ref[0], keypoint_coords[0], numpy.array([label, 0])])
+                keypoint_coords_final = numpy.concatenate([keypoint_coords_ref[0], keypoint_coords[0], numpy.array([label, 0])])
                 coord_list.append(keypoint_coords_final)
                 #print(coord_list)
     #print(coord_list)
