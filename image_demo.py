@@ -49,7 +49,7 @@ def main():
                 min_pose_score=0.25)
 
         keypoint_coords *= output_scale
-        coord_list.add(keypoint_coords)
+        coord_list.append(keypoint_coords)
     print(coord_list)  
 
 '''
