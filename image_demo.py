@@ -50,7 +50,6 @@ def main():
 
         keypoint_coords *= output_scale
         f.write(keypoint_coords)
-    f.close()
 
         if args.output_dir:
             draw_image = posenet.draw_skel_and_kp(
@@ -68,7 +67,7 @@ def main():
                 print('Pose #%d, score = %f' % (pi, pose_scores[pi]))
                 for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
                     print('Keypoint %s, score = %f, coord = %s' % (posenet.PART_NAMES[ki], s, c))
-
+    f.close()
     print('Average FPS:', len(filenames) / (time.time() - start))
 
 
