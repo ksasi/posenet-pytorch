@@ -25,31 +25,38 @@ def main():
         if not os.path.exists(args.output_dir):
             os.makedirs(args.output_dir)
 
+    dirs_level1 = [f.path for f in os.scandir(args.image_dir) if f.is_dir()]
     filenames = [
         f.path for f in os.scandir(args.image_dir) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
     start = time.time()
     coord_list = []
-    for f in filenames:
-        input_image, draw_image, output_scale = posenet.read_imgfile(
-            f, scale_factor=args.scale_factor, output_stride=output_stride)
+    for d in dirs_level1:
+        dirs_level2 = [f.path for f in os.scandir(args.image_dir + '/' + d) if f.is_dir()]
+        for d2 in dirs_level2:
+            filenames = [f.path for f in os.scandir(args.image_dir + '/' + d + '/' + d2) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
-        with torch.no_grad():
-            input_image = torch.Tensor(input_image).cuda()
 
-            heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = model(input_image)
+            for f in filenames:
+                input_image, draw_image, output_scale = posenet.read_imgfile(
+                    f, scale_factor=args.scale_factor, output_stride=output_stride)
 
-            pose_scores, keypoint_scores, keypoint_coords = posenet.decode_multiple_poses(
-                heatmaps_result.squeeze(0),
-                offsets_result.squeeze(0),
-                displacement_fwd_result.squeeze(0),
-                displacement_bwd_result.squeeze(0),
-                output_stride=output_stride,
-                max_pose_detections=10,
-                min_pose_score=0.25)
+                with torch.no_grad():
+                    input_image = torch.Tensor(input_image).cuda()
 
-        keypoint_coords *= output_scale
-        coord_list.append(keypoint_coords[0])
+                    heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = model(input_image)
+
+                    pose_scores, keypoint_scores, keypoint_coords = posenet.decode_multiple_poses(
+                        heatmaps_result.squeeze(0),
+                        offsets_result.squeeze(0),
+                        displacement_fwd_result.squeeze(0),
+                        displacement_bwd_result.squeeze(0),
+                        output_stride=output_stride,
+                        max_pose_detections=10,
+                        min_pose_score=0.25)
+
+                keypoint_coords *= output_scale
+                coord_list.append(keypoint_coords[0])
     print(coord_list)
     numpy.savetxt("coord_list.csv", numpy.array(coord_list).reshape(-1,17*2), delimiter=",") 
 
