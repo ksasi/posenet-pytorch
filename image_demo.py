@@ -29,7 +29,7 @@ def main():
         f.path for f in os.scandir(args.image_dir) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
     start = time.time()
-    f = open("coordinates.csv", "w")
+    coord_list = []
     for f in filenames:
         input_image, draw_image, output_scale = posenet.read_imgfile(
             f, scale_factor=args.scale_factor, output_stride=output_stride)
@@ -49,8 +49,10 @@ def main():
                 min_pose_score=0.25)
 
         keypoint_coords *= output_scale
-        f.write(keypoint_coords)
+        coord_list.add(keypoint_coords)
+    print(coord_list)  
 
+'''
         if args.output_dir:
             draw_image = posenet.draw_skel_and_kp(
                 draw_image, pose_scores, keypoint_scores, keypoint_coords,
@@ -69,7 +71,7 @@ def main():
                     print('Keypoint %s, score = %f, coord = %s' % (posenet.PART_NAMES[ki], s, c))
     f.close()
     print('Average FPS:', len(filenames) / (time.time() - start))
-
+'''
 
 if __name__ == "__main__":
     main()
