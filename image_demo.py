@@ -27,17 +27,17 @@ def main():
 
     dirs_level1 = [f.path for f in os.scandir(args.image_dir) if f.is_dir()]
     filenames = [
-        f.path for f in os.scandir(args.image_dir) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
+        f.path for f in os.scandir(args.image_dir) if f.is_file() and f.path.endswith(('.png', '.jpg', '.jpeg'))]
 
     start = time.time()
     coord_list = []
     for d in dirs_level1:
         dirs_level2 = [f.path for f in os.scandir(d) if f.is_dir()]
-        ref_image_list = [f.path for f in os.scandir(d) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
+        ref_image_list = [f.path for f in os.scandir(d) if f.is_file() and f.path.endswith(('.png', '.jpg', '.jpeg'))]
         print(ref_image_list)
         ref_image = ref_image_list[0]
-        for d2 in dirs_level2:
-            filenames = [f.path for f in os.scandir(d2) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
+        for label, d2 in enumerate(dirs_level2):
+            filenames = [f.path for f in os.scandir(d2) if f.is_file() and f.path.endswith(('.png', '.jpg', '.jpeg'))]
             for f in filenames:
                 input_image, draw_image, output_scale = posenet.read_imgfile(
                     f, scale_factor=args.scale_factor, output_stride=output_stride)
@@ -71,7 +71,7 @@ def main():
 
                 keypoint_coords *= output_scale
                 keypoint_coords_ref *= output_scale
-                coord_list.append(keypoint_coords_ref[0]+keypoint_coords[0])
+                coord_list.append(keypoint_coords_ref[0]+keypoint_coords[0]+label)
     print(coord_list)
     numpy.savetxt("coord_list.csv", numpy.array(coord_list).reshape(-1,(17+17)*2), delimiter=",") 
 
