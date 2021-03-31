@@ -72,7 +72,7 @@ def main():
                 keypoint_coords *= output_scale
                 keypoint_coords_ref *= output_scale
                 print(numpy.array([label]))
-                print(type(label))
+                print(type(numpy.array([label])))
                 print(type(keypoint_coords))
                 coord_list.append(keypoint_coords_ref[0]+keypoint_coords[0])
     print(coord_list)
