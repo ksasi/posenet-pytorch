@@ -32,7 +32,7 @@ def main():
     start = time.time()
     coord_list = []
     for d in dirs_level1:
-        dirs_level2 = [f.path for f in os.scandir(args.image_dir + '/' + d) if f.is_dir()]
+        dirs_level2 = [f.path for f in os.scandir(d) if f.is_dir()]
         for d2 in dirs_level2:
             filenames = [f.path for f in os.scandir(args.image_dir + '/' + d + '/' + d2) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
