@@ -32,7 +32,7 @@ def main():
     start = time.time()
     coord_list = []
     for d in dirs_level1:
-        ref_image_list = [f for f in os.scandir(d) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
+        ref_image_list = [f.path for f in os.scandir(d) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
         print(ref_image_list)
         ref_image = ref_image_list[0]
         dirs_level2 = [f.path for f in os.scandir(d) if f.is_dir()]
