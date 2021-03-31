@@ -32,17 +32,22 @@ def main():
     start = time.time()
     coord_list = []
     for d in dirs_level1:
+        ref_image = [f.path for f in os.scandir(d) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
         dirs_level2 = [f.path for f in os.scandir(d) if f.is_dir()]
         for d2 in dirs_level2:
             filenames = [f.path for f in os.scandir(d2) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
             for f in filenames:
                 input_image, draw_image, output_scale = posenet.read_imgfile(
                     f, scale_factor=args.scale_factor, output_stride=output_stride)
+                input_image_ref, draw_image_ref, output_scale_ref = posenet.read_imgfile(
+                    ref_image, scale_factor=args.scale_factor, output_stride=output_stride)
 
                 with torch.no_grad():
                     input_image = torch.Tensor(input_image).cuda()
+                    input_image_ref = torch.Tensor(input_image_ref).cuda()
 
                     heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = model(input_image)
+                    heatmaps_result_ref, offsets_result_ref, displacement_fwd_result_ref, displacement_bwd_result_ref = model(input_image_ref)
 
                     pose_scores, keypoint_scores, keypoint_coords = posenet.decode_multiple_poses(
                         heatmaps_result.squeeze(0),
@@ -52,11 +57,21 @@ def main():
                         output_stride=output_stride,
                         max_pose_detections=10,
                         min_pose_score=0.25)
+                    
+                    pose_scores_ref, keypoint_scores_ref, keypoint_coords_ref = posenet.decode_multiple_poses(
+                        heatmaps_result_ref.squeeze(0),
+                        offsets_result_ref.squeeze(0),
+                        displacement_fwd_result_ref.squeeze(0),
+                        displacement_bwd_result_ref.squeeze(0),
+                        output_stride=output_stride,
+                        max_pose_detections=10,
+                        min_pose_score=0.25)
 
                 keypoint_coords *= output_scale
-                coord_list.append(keypoint_coords[0])
+                keypoint_coords_ref *= output_scale
+                coord_list.append(keypoint_coords_ref[0]+keypoint_coords[0])
     print(coord_list)
-    numpy.savetxt("coord_list.csv", numpy.array(coord_list).reshape(-1,17*2), delimiter=",") 
+    numpy.savetxt("coord_list.csv", numpy.array(coord_list).reshape(-1,(17+17)*2), delimiter=",") 
 
 '''
         if args.output_dir:
