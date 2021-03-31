@@ -29,6 +29,7 @@ def main():
         f.path for f in os.scandir(args.image_dir) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
     start = time.time()
+    f = open("coordinates.csv", "w")
     for f in filenames:
         input_image, draw_image, output_scale = posenet.read_imgfile(
             f, scale_factor=args.scale_factor, output_stride=output_stride)
@@ -48,6 +49,8 @@ def main():
                 min_pose_score=0.25)
 
         keypoint_coords *= output_scale
+        f.write(keypoint_coords)
+    f.close()
 
         if args.output_dir:
             draw_image = posenet.draw_skel_and_kp(
