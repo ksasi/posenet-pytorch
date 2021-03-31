@@ -3,7 +3,7 @@ import time
 import argparse
 import os
 import torch
-
+import numpy
 import posenet
 
 
@@ -49,8 +49,9 @@ def main():
                 min_pose_score=0.25)
 
         keypoint_coords *= output_scale
-        coord_list.append(keypoint_coords)
-    print(coord_list)  
+        coord_list.append(keypoint_coords[0])
+    print(coord_list)
+    numpy.savetxt("coord_list.csv", numpy.array(coord_list), delimiter=",") 
 
 '''
         if args.output_dir:
