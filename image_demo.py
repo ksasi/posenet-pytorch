@@ -34,9 +34,7 @@ def main():
     for d in dirs_level1:
         dirs_level2 = [f.path for f in os.scandir(d) if f.is_dir()]
         for d2 in dirs_level2:
-            filenames = [f.path for f in os.scandir(args.image_dir + '/' + d + '/' + d2) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
-
-
+            filenames = [f.path for f in os.scandir(d2) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
             for f in filenames:
                 input_image, draw_image, output_scale = posenet.read_imgfile(
                     f, scale_factor=args.scale_factor, output_stride=output_stride)
